@@ -1,0 +1,89 @@
+#Tidy Pyroseq Result Report - Updated 6/2/18
+
+#Need tidyr and dplyr package to organize this data into an easy to use dataset
+library(tidyr)
+library(dplyr)
+
+#Before importing data, change the following using exce:
+##add a "Distance from TSS" column next to each Position column 
+##Change teh "Meth. (%)" column name to "MethPercent"
+
+#import the data: the check.names changes the naming of columns that have the same name. Ex there are 4 "MethPercent" columns that are each renamed
+data <- read.csv("LRIT1data.csv", header=T, skip = 2, check.names = T)
+
+#look at the beginning of the data
+head(data)
+
+#The assay column has lots of info. We will seperate the infor and only keep what we need (gene name). Ignore the warning message of "Expected 2 pieces. Additional pieces discarded in 24 rows"
+data <- separate(data, Assay, c("Gene.Name", sep="-"))
+
+#keep only the columns of data we need. 
+data <- select(data, Gene.Name, Note, 
+               Distance.from.TSS, Name, MethPercent, Quality,
+               Distance.from.TSS.1, Name.1, MethPercent.1, Quality.1,
+               Distance.from.TSS.2, Name.2 ,MethPercent.2, Quality.2, 
+               Distance.from.TSS.3, Name.3, MethPercent.3, Quality.3)
+###---!!!!!!Will be more if there are more poistions!!!!!!---##
+
+#look at the data
+head(data)
+
+#It's possible that you have more than one gene per CSV file. In this case, you need to split the CSV by gene
+InsertGeneName1Here <- filter(data, Gene.Name == "InsertGeneName1Here")
+InsertGeneName2Here <- filter(data, Gene.Name == "InsertGeneName2Here")
+##Repeat for as many genes as you have
+
+
+#StepA: For the gene sperate the positions into multiple data frames. NOTE that you have to change the first argument (InsertGeneName1Here)
+pos1 <- subset(InsertGeneName1Here, select=c("Gene.Name", "Note", "Name", "Distance.from.TSS", "MethPercent", "Quality"))
+pos2 <- subset(InsertGeneName1Here, select=c("Gene.Name", "Note", "Name.1", "Distance.from.TSS.1","MethPercent.1", "Quality.1"))
+pos3 <- subset(InsertGeneName1Here, select=c("Gene.Name", "Note", "Name.2", "Distance.from.TSS.2","MethPercent.2", "Quality.2"))
+pos4 <- subset(InsertGeneName1Here, select=c("Gene.Name", "Note", "Name.3", "Distance.from.TSS.3","MethPercent.3", "Quality.3"))
+
+##---!!!!!!repeat this for as many positions as there are!!!!!!---##
+
+#look at the data
+head(pos1)
+head(pos2)
+head(pos3)
+head(pos4)
+
+#Step B: rename the columns for each subset of data you just made
+names(pos1) <- c("Gene.Name", "Tissue.Type", "Position", "Distance.from.TSS", "Methylation.Level", "Quality")
+names(pos2) <- c("Gene.Name", "Tissue.Type", "Position", "Distance.from.TSS", "Methylation.Level", "Quality")
+names(pos3) <- c("Gene.Name", "Tissue.Type", "Position", "Distance.from.TSS", "Methylation.Level", "Quality")
+names(pos4) <- c("Gene.Name", "Tissue.Type", "Position", "Distance.from.TSS", "Methylation.Level", "Quality")
+
+#look at the data
+head(pos1)
+head(pos2)
+head(pos3)
+head(pos4)
+
+#Step C: remove rows from each dataframe if the Quality is "Failed"
+pos1 <- filter(pos1, Quality != "Failed")
+pos2 <- filter(pos2, Quality != "Failed")
+pos3 <- filter(pos3, Quality != "Failed")
+pos4 <- filter(pos4, Quality != "Failed")
+
+#Step D: remove the Quality column (this is optional)
+pos1 <- select(pos1, -Quality)
+pos2 <- select(pos2, -Quality)
+pos3 <- select(pos3, -Quality)
+pos4 <- select(pos4, -Quality)
+
+#Step E: combine dataframes into one large dataframe. This is your data for one gene.
+MethData1 <- rbind(pos1,pos2,pos3,pos4)
+#if you have more postions, you will have more to combine. Ex: rbind(pos1,pos2,pos3,pos4,pos5,pos6)
+
+#REPEAT Steps A through E for each of the genes in the original CpG Analysis Result Report
+#You may have multiple files for one gene. You should go through this above process for each file and then combine the dataframes that are for the same gene.
+#You want one dataframe for each gene. 
+#You can also combine all the gene dataframes to make one master dataframe with all the data for all your genes of interest.
+
+#Save your dataframe to a desired location
+write.csv(MethData1,file = file.choose(new = T))
+#This will open a window. Choose the save location
+#In File Name, write in what you want to call the csv file (Ex: MethData.csv)
+#Then click open. You'll be told that this file doesn't exist and if you want to make a new one. Click "Yes". 
+#Your csv file should now be saved at your desired location with your desired name. 
