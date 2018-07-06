@@ -19,6 +19,6 @@ This repository contains code used for data analysis presented in:
 
 Code used is available in each of the scripts below.
 
-1. [Organizing data](code/Organizing-and-Graphing-Pyroseq-Data/Organizing Pyroseq Data)
+1. [Organizing data](code/Organizing Pyroseq Data)
 1. [Making a Line Plot](code/star.sh)
 1. [Making a Dot Plot](code/featurecounts.sh)
