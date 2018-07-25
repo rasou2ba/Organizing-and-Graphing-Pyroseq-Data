@@ -19,6 +19,6 @@ This repository contains code used for data analysis presented in:
 
 Code used is available in each of the scripts below.
 
-1. [Organizing data](Organizing Pyroseq Data)
-1. [Making a Line Plot](code/star.sh)
-1. [Making a Dot Plot](code/featurecounts.sh)
+1. [Organizing data](https://github.com/rasou2ba/Organizing-and-Graphing-Pyroseq-Data/blob/master/Organizing%20Pyroseq%20Data)
+1. [Making a Line Plot](https://github.com/rasou2ba/Organizing-and-Graphing-Pyroseq-Data/blob/master/Line%20Graph)
+1. [Making a Dot Plot](https://github.com/rasou2ba/Organizing-and-Graphing-Pyroseq-Data/blob/master/Dot%20Plot)
